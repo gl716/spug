@@ -41,8 +41,9 @@ def import_app(request):
             deploy.save()
 
             deploy_extend1 = DeployExtend1()
-            if deploy.deployextend1:
-                deploy_extend1 = deploy.deployextend1
+            deploy_extend1s = DeployExtend1.objects.filter(deploy_id=deploy.id).all()
+            if deploy_extend1s:
+                deploy_extend1 = deploy_extend1s[0]
             deploy_extend1.deploy = deploy
             deploy_extend1.git_repo = t[4]
             deploy_extend1.dst_dir = t[5]
