@@ -22,7 +22,7 @@
     "xterm-addon-fit": "^0.5.0"
   },
   "scripts": {
-    "start": "react-app-rewired start",
+    "start": "react-app-rewired --openssl-legacy-provider start",
     "build": "GENERATE_SOURCEMAP=false react-app-rewired build",
     "test": "react-app-rewired test",
     "eject": "react-scripts eject"
