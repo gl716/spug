@@ -47,13 +47,14 @@ def import_app(request):
             deploy_extend1.deploy = deploy
             deploy_extend1.git_repo = t[4]
             deploy_extend1.dst_dir = t[5]
-            deploy_extend1.dst_repo = '~/release'
+            deploy_extend1.dst_repo = t[9] if t[9] else "release"
             deploy_extend1.versions = 5
-            deploy_extend1.filter_rule = '{"type": "contain", "data": "target/*.jar"}'
+            contain_rule = t[8] if t[8] else "*.jar"
+            deploy_extend1.filter_rule = '{"type": "contain", "data": "' + contain_rule + '"}'
             deploy_extend1.hook_pre_host = ''
-            deploy_extend1.hook_post_server = t[6] if t[6] else f"mvn{env_map[t[2]]} install"
-            deploy_extend1.hook_post_host = t[7] if t[
-                7] else 'wget http://w.metaitsaas.com/run.sh -o /dev/null\nchmod +x run.sh\n./run.sh -g restart'
+            deploy_extend1.hook_post_server = t[6] if t[6] else f"mvn{env_map[t[2]]} install;cp target/*.jar ."
+            run_command = 'wget http://w.metaitsaas.com/run.sh -o /dev/null\nchmod +x run.sh\n./run.sh -l restart'
+            deploy_extend1.hook_post_host = t[7] if t[7] else run_command
             deploy_extend1.save()
 
     return HttpResponse('OK')
