@@ -2,7 +2,7 @@ import requests
 import json
 import csv
 
-with open('data.csv', newline='') as csvfile:
+with open('data.csv', newline='', encoding='utf-8') as csvfile:
     reader = csv.reader(csvfile, delimiter=',', quotechar='"')
     i = 0
     apps = []
