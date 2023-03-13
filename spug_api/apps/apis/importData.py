@@ -16,7 +16,9 @@ def import_app(request):
         print(data['apps'])
         for t in data['apps']:
             environments = Environment.objects.filter(id=t[2]).all()
-            host = Host.objects.get(id=t[3].split(",")[0].rstrip())
+            first_host_id = t[3].split(",")[0].rstrip()
+            print(f"first_host_id:{first_host_id}")
+            host = Host.objects.get(id=first_host_id)
             default_dst_repo = f"/home/{host.username}/release"
             if not environments:
                 print(f'环境不存在：{t[2]}')
