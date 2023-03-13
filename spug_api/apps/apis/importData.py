@@ -12,9 +12,13 @@ def import_app(request):
     if request.method == 'POST':
         data = json.loads(request.body)
         env_map = {'1': 'dev', '2': 'test', '3': 'uat', '4': 'prod'}
-
-        print(data['apps'])
+        pre_t = None
         for t in data['apps']:
+            if pre_t and pre_t[0] == t[0]:
+                for i in range(len(t)):
+                    if not t[i]:
+                        t[i] = pre_t[i]
+            print(t)
             environments = Environment.objects.filter(id=t[2]).all()
             first_host_id = t[3].split(",")[0].rstrip()
             print(f"first_host_id:{first_host_id}")
@@ -62,5 +66,6 @@ def import_app(request):
             run_command = 'wget http://w.metaitsaas.com/run.sh -o /dev/null\nchmod +x run.sh\n./run.sh -l restart'
             deploy_extend1.hook_post_host = t[7] if t[7] else run_command
             deploy_extend1.save()
+            pre_t = t
 
     return HttpResponse('OK')
