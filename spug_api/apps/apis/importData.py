@@ -14,7 +14,6 @@ def import_app(request):
         pre_t = None
         all_envs = Environment.objects.all()
         all_hosts = Host.objects.all()
-        all_apps = App.objects.all()
         all_deploys = Deploy.objects.all()
         all_deploy_extend1s = DeployExtend1.objects.all()
         for t in data['apps']:
@@ -22,6 +21,8 @@ def import_app(request):
                 for i in range(len(t)):
                     if not t[i]:
                         t[i] = pre_t[i]
+            if t[4].startswith("itsaas"):
+                t[4] = "ssh://git@gitlab.zznode.com:2222/zzp/saas/" + t[4] + ".git"
             print(t)
             environments = [env for env in all_envs if env.key == t[2]]
             hosts = [host for host in all_hosts if host.name in t[3].split(",")]
@@ -32,7 +33,7 @@ def import_app(request):
                 print(f'环境不存在：{t[2]}')
                 raise Http404
             env = environments[0]
-            apps = [app for app in all_apps if app.key == t[1]]
+            apps = App.objects.filter(key=t[1]).all()
             app = apps[0] if apps else App()
             app.created_by = user
             app.name = t[0]
