@@ -23,11 +23,11 @@ def import_app(request):
                         t[i] = pre_t[i]
             if t[4].startswith("itsaas"):
                 t[4] = "ssh://git@gitlab.zznode.com:2222/zzp/saas/" + t[4] + ".git"
-            print(t)
+            # print(t)
             environments = [env for env in all_envs if env.key == t[2]]
             hosts = [host for host in all_hosts if host.name in t[3].split(",")]
             host_id_list = [host.id for host in hosts]
-            print(f"hosts:{hosts}")
+            # print(f"hosts:{hosts}")
             default_dst_repo = f"/home/{hosts[0].username}/release"
             if not environments:
                 print(f'环境不存在：{t[2]}')
@@ -60,8 +60,8 @@ def import_app(request):
             deploy_extend1.versions = 5
             contain_rule = t[8] if t[8] else "*.jar"
             deploy_extend1.filter_rule = '{"type": "contain", "data": "' + contain_rule + '"}'
-            deploy_extend1.hook_pre_host = ''
-            deploy_extend1.hook_post_server = t[6] if t[6] else f"mvn{t[2]} install;cp target/*.jar ."
+            deploy_extend1.hook_pre_host = f"cd {t[5]};bash run.sh stop" if "jar" in contain_rule else ''
+            deploy_extend1.hook_post_server = t[6] if t[6] else f"mvn{t[2]} clean install;cp target/*.jar ."
             run_command = 'wget http://w.metaitsaas.com/run.sh -o /dev/null\nchmod +x run.sh\n./run.sh -l restart'
             deploy_extend1.hook_post_host = t[7] if t[7] else run_command
             deploy_extend1.save()
