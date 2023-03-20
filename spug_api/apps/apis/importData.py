@@ -17,6 +17,9 @@ def import_app(request):
         all_deploys = Deploy.objects.all()
         all_deploy_extend1s = DeployExtend1.objects.all()
         for t in data['apps']:
+            if not t[0]:
+                print(f'应用名不能为空：{t}')
+                raise Http404
             if pre_t and pre_t[0] == t[0]:
                 for i in range(len(t)):
                     if not t[i]:
@@ -60,8 +63,10 @@ def import_app(request):
             deploy_extend1.versions = 5
             contain_rule = t[8] if t[8] else "*.jar"
             deploy_extend1.filter_rule = '{"type": "contain", "data": "' + contain_rule + '"}'
-            deploy_extend1.hook_pre_host = f"cd {t[5]};bash run.sh stop" if "jar" in contain_rule else ''
-            deploy_extend1.hook_post_server = t[6] if t[6] else f"mvn{t[2]} clean install;cp target/*.jar ."
+            jar_stop_command = f"bash {t[5]}/run.sh stop 2>/dev/null || echo 'pass'"
+            deploy_extend1.hook_pre_host = jar_stop_command if "jar" in contain_rule else ''
+            compile_project = f"mvn{t[2]} clean install&&cp target/*.jar ."
+            deploy_extend1.hook_post_server = t[6].replace('mvnx', f"mvn{t[2]}") if t[6] else compile_project
             run_command = 'wget http://w.metaitsaas.com/run.sh -o /dev/null\nchmod +x run.sh\n./run.sh -l restart'
             deploy_extend1.hook_post_host = t[7] if t[7] else run_command
             deploy_extend1.save()
