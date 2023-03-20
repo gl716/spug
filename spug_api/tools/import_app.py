@@ -22,13 +22,32 @@ def import_to():
 with open('data.csv', newline='', encoding='utf-8') as csvfile:
     reader = csv.reader(csvfile, delimiter=',', quotechar='"')
     i = 0
+    old_apps = []
     apps = []
     for row in reader:
         i = i + 1
         if i > 1:
-            apps.append(row)
-        print(f"第{i}行：{row}")
+            old_apps.append(row)
 
-print(len(sys.argv))
+    for i in range(len(old_apps)):
+        current = old_apps[i]
+        if "multi" in old_apps[i][2]:
+            for hostname in current[3].split(",", maxsplit=3):
+                cp_current = current[:]
+                cp_current[3] = hostname
+                if "host26" in hostname:
+                    cp_current[2] = "dev"
+                elif "host27" in hostname:
+                    cp_current[2] = "test"
+                elif "host28" in hostname:
+                    cp_current[2] = "uat"
+                else:
+                    cp_current[2] = "prod"
+                apps.append(cp_current)
+        else:
+            apps.append(current)
+    for i in range(len(apps)):
+        print(f"第{i}行：{apps[i]}")
+
 
 import_to()
