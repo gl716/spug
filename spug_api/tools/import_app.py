@@ -27,7 +27,11 @@ with open('data.csv', newline='', encoding='utf-8') as csvfile:
     for row in reader:
         i = i + 1
         if i > 1:
-            old_apps.append(row)
+            if len(sys.argv) > 1:
+                if sys.argv[1] in row[0]:
+                    old_apps.append(row)
+            else:
+                old_apps.append(row)
 
     for i in range(len(old_apps)):
         current = old_apps[i]
@@ -48,6 +52,5 @@ with open('data.csv', newline='', encoding='utf-8') as csvfile:
             apps.append(current)
     for i in range(len(apps)):
         print(f"第{i}行：{apps[i]}")
-
 
 import_to()
