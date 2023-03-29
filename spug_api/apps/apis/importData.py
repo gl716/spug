@@ -80,7 +80,7 @@ def import_app(request):
                 deploy_extend1.hook_pre_host = jar_stop_command if "jar" in contain_rule else ''
                 compile_project = f"mvn{t[2]} clean install&&cp target/*.jar ."
                 deploy_extend1.hook_post_server = t[6].replace('mvnx', f"mvn{t[2]}") if t[6] else compile_project
-                run_command = 'wget http://w.metaitsaas.com/run.sh -o /dev/null\nchmod +x run.sh\n./run.sh -l restart'
+                run_command = 'wget http://w.metaitsaas.com/run.sh -o /dev/null\nchmod +x run.sh\n./run.sh -l start'
                 deploy_extend1.hook_post_host = t[7] if t[7] else run_command
             deploy_extend1.save()
             pre_t = t
