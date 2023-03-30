@@ -1,10 +1,12 @@
-import json, time
+import json
+import time
 
 from django.http import HttpResponse, Http404
+
 from apps.account.models import User
 from apps.app.models import App, Deploy, DeployExtend1
-from apps.host.models import Host
 from apps.config.models import Environment
+from apps.host.models import Host
 
 
 def import_app(request):
