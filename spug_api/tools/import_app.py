@@ -35,6 +35,8 @@ with open('data.csv', newline='', encoding='utf-8') as csvfile:
 
     for i in range(len(old_apps)):
         current = old_apps[i]
+        if not current[1]:
+            current[1] = current[0].replace("-", "_")
         if "multi" in old_apps[i][2]:
             for hostname in current[3].split(",", maxsplit=3):
                 cp_current = current[:]

@@ -71,14 +71,14 @@ def import_app(request):
             if "itsaas-front" in deploy_extend1.git_repo:
                 contain_rule = t[8] if t[8] else "favicon.ico\\n index.html\\n static"
                 deploy_extend1.filter_rule = '{"type": "contain", "data": "' + contain_rule + '"}'
-                compile_project = f"npm i&&npm run build&&mv dist/* ."
+                compile_project = f"npm cache clean --force&&npm i&&npm run build&&mv dist/* ."
                 deploy_extend1.hook_post_server = t[6] if t[6] else compile_project
                 deploy_extend1.hook_post_host = ''
                 deploy_extend1.hook_pre_host = ''
             else:
                 contain_rule = t[8] if t[8] else "*.jar"
                 deploy_extend1.filter_rule = '{"type": "contain", "data": "' + contain_rule + '"}'
-                jar_stop_command = f"bash {t[5]}/run.sh stop 2>/dev/null || echo 'pass'"
+                jar_stop_command = f"bash {t[5]}/run.sh stop || echo 'stop error'"
                 deploy_extend1.hook_pre_host = jar_stop_command if "jar" in contain_rule else ''
                 compile_project = f"mvn{t[2]} clean install&&cp target/*.jar ."
                 deploy_extend1.hook_post_server = t[6].replace('mvnx', f"mvn{t[2]}") if t[6] else compile_project
